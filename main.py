@@ -1,8 +1,8 @@
 # Required Libraries
 import streamlit as st
 # Assuming you have a function 'get_response' that gets the chatbot's response
-# def get_response(user_input):
-#     return "This is the chatbot's reply to " + user_input
+def get_response(user_input):
+    return "This is the chatbot's reply to " + user_input
 
 # Streamlit UI
 
