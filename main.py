@@ -14,7 +14,7 @@ st.sidebar.header("Instructions")
 st.sidebar.text("Enter your message and click 'Send'.\nProvide feedback using thumbs up/down.")
 
 # Layout
-col1, col2 = st.beta_columns([3,1])
+col1, col2 = st.columns([3,1])
 
 # Chat history
 history = []
