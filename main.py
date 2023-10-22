@@ -34,7 +34,7 @@ def save_feedback(feedback):
         writer = csv.writer(file)
         writer.writerows(feedback)
 
-# Dummy function for chatbot's response (remove this if you have a real function)
+# Dummy function for chatbot's response
 def get_response(user_input):
     return "This is the chatbot's reply to " + user_input
 
@@ -42,12 +42,18 @@ history = load_history()
 feedback_data = load_feedback()
 
 # Streamlit UI
-
 st.title("ChatGPT-like Interface")
 st.sidebar.header("Instructions")
 st.sidebar.text("Enter your message and click 'Send'.\nProvide feedback using thumbs up/down.")
 
-col1, col2 = st.columns([3,1])
+# Clear Chat History Button
+if st.sidebar.button('Clear Chat History'):
+    history.clear()
+    if os.path.exists(HISTORY_FILE_PATH):
+        os.remove(HISTORY_FILE_PATH)
+    st.experimental_rerun()
+
+col1, col2, col3 = st.columns([3,1,1])
 
 # Display chat history
 for chat in history:
@@ -63,17 +69,23 @@ with col1:
 # Send button
 if col2.button('Send'):
     history.append(['user', user_input])
+    col1.write(f"You: {user_input}", unsafe_allow_html=True) # Instant display to simulate real-time chat
+
     response = get_response(user_input)
     history.append(['bot', response])
-    save_history(history)
-    st.experimental_rerun()
+    col1.write(f"ChatGPT: {response}", unsafe_allow_html=True) # Instant display to simulate real-time chat
 
-# Feedback
-feedback = st.radio("Was this helpful?", ["👍", "👎"])
+    save_history(history)
+
 comments = st.text_area("Any comments?")
 
-# Submit feedback button
-if st.button('Submit Feedback'):
-    feedback_data.append([feedback, comments])
+# Feedback buttons
+if col2.button('👍'):
+    feedback_data.append(["👍", comments])
+    save_feedback(feedback_data)
+    st.success("Thanks for your feedback!")
+
+if col3.button('👎'):
+    feedback_data.append(["👎", comments])
     save_feedback(feedback_data)
     st.success("Thanks for your feedback!")
